@@ -1,8 +1,10 @@
 ---
-title: Primera Nota
+title: Primera Nota y Metodología
+description: Guía de navegación del jardín digital, metodología de notas y uso de backlinks.
 tags:
   - ejemplo
   - guia
+recomendar: Si
 ---
 
 # Primera Nota de Ejemplo

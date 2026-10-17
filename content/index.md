@@ -1,58 +1,28 @@
 ---
-title: Mi Jardín Digital
+title: El Truco del Mercado
 tags:
-  - bienvenida
-  - notas
+  - economia
+  - finanzas
+  - mercados
 ---
 
-# Bienvenido a tu Jardín Digital con Quartz y Obsidian 🌿
+<div class="dashboard-hero">
+  <h1>El Truco del Mercado 📊</h1>
+  <p class="hero-subtitle">Reflexiones, análisis macroeconómico, finanzas cuantitativas y notas de mercado publicadas desde mi vault de Obsidian.</p>
+  <div class="dashboard-topics">
+    <span class="topic-label">Explorar:</span>
+    <a href="./tags/economia" class="topic-pill">Economía</a>
+    <a href="./tags/finanzas" class="topic-pill">Finanzas</a>
+    <a href="./tags/mercados" class="topic-pill">Mercados</a>
+    <a href="./tags/guia" class="topic-pill">Guías</a>
+  </div>
+</div>
 
-Este espacio está configurado y optimizado para publicar notas en formato **Obsidian Flavored Markdown (OFM)** utilizando [Quartz 5](https://quartz.jzhao.xyz).
+<div class="section-header">
+  <h2>⭐ Más Relevantes</h2>
+  <span class="section-hint">Últimos artículos destacados</span>
+</div>
 
----
+<div class="featured-grid">
+</div>
 
-## 🚀 Características activas de Obsidian
-
-### 1. Enlaces bidireccionales (Wikilinks)
-Puedes vincular notas usando sintaxis de Obsidian:
-- Enlace a otra nota: [[Primera Nota]]
-- Enlace con alias: [[Primera Nota|Ver mi primera nota de prueba]]
-
-### 2. Callouts
-> [!TIP]
-> Los callouts de Obsidian se visualizan con el diseño nativo de Quartz.
-
-> [!NOTE]
-> Puedes abrir directamente la carpeta `content/` de este proyecto como un **Vault en Obsidian**.
-
-### 3. Listas de tareas interactivas
-- [x] Clonar repositorio oficial de Quartz
-- [x] Instalar dependencias del sistema
-- [x] Configurar plantilla `obsidian`
-- [x] Habilitar soporte para idioma español (`es-ES`)
-- [ ] Escribir mis primeras notas
-
-### 4. Soporte matemático (LaTeX / KaTeX)
-Ecuaciones matemáticas fluidas:
-$e^{i\pi} + 1 = 0$
-
-O en bloque:
-$$f(x) = \int_{-\infty}^\infty \hat{f}(\xi)\,e^{2 \pi i \xi x}\,d\xi$$
-
-### 5. Diagramas Mermaid
-```mermaid
-graph LR
-    A[Obsidian Vault] -->|Escribir notas| B(Carpeta content)
-    B -->|npx quartz build| C[Sitio Web Estático]
-    C -->|npx quartz sync| D[(GitHub Pages / Vercel)]
-```
-
----
-
-## 🛠 Comandos útiles
-
-| Comando                                      | Acción                                                         |
-| -------------------------------------------- | -------------------------------------------------------------- |
-| `npm run serve` o `npx quartz build --serve` | Iniciar servidor local de desarrollo (`http://localhost:8080`) |
-| `npm run build` o `npx quartz build`         | Compilar el sitio estático para producción (en `public/`)      |
-| `npm run sync` o `npx quartz sync`           | Sincronizar y publicar cambios en GitHub                       |

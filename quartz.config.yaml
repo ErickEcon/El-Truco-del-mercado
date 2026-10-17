@@ -236,7 +236,18 @@ plugins:
       position: footer
       priority: 50
   - source: "@quartz-community/recent-notes"
-    enabled: false
+    enabled: true
+    options:
+      title: "Últimos Artículos"
+      limit: 6
+      showTags: true
+      linkToMore: false
+      hideFolderPages: true
+      hideTagPages: true
+    layout:
+      position: afterBody
+      priority: 20
+      condition: only-index
   - source: "@quartz-community/spacer"
     enabled: true
     options: {}

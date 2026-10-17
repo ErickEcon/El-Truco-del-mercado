@@ -16,8 +16,9 @@ export const NotFoundPageType: QuartzPageTypePlugin = () => ({
       slug,
       text: notFound,
       description: notFound,
-      frontmatter: { title: notFound, tags: [] },
+      frontmatter: { title: notFound, tags: [], unlisted: true },
     })
+    vfile.data.unlisted = true
 
     return [
       {

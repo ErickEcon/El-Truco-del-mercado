@@ -7,11 +7,12 @@ import {
   JSResourceToScriptElement,
   StaticResources,
 } from "../util/resources"
-import { FullSlug, RelativeURL, joinSegments, normalizeHastElement } from "../util/path"
+import { FullSlug, RelativeURL, joinSegments, normalizeHastElement, resolveRelative } from "../util/path"
 import { clone } from "../util/clone"
 import { Root, Element, ElementContent } from "hast"
 import { GlobalConfiguration } from "../cfg"
 import { i18n } from "../i18n"
+import { formatDate } from "./Date"
 import { styleText } from "util"
 import { resolveFrame } from "./frames"
 import type { TreeTransform } from "../plugins/types"
@@ -297,6 +298,180 @@ export function renderTranscludes(
   walk(root)
 }
 
+function renderAutoFeatured(
+  root: Root,
+  cfg: GlobalConfiguration,
+  slug: FullSlug,
+  componentData: QuartzComponentProps,
+) {
+  function processNode(node: ElementContent) {
+    if (node.type !== "element") return
+
+    const props = node.properties || {}
+    const classVal = props.class ?? props.className
+    const classes = Array.isArray(classVal)
+      ? classVal
+      : typeof classVal === "string"
+      ? classVal.split(/\s+/)
+      : []
+
+    if (classes.includes("featured-grid")) {
+      // Find all recommended files
+      const recommendedFiles = componentData.allFiles.filter((file) => {
+        if (!file.slug || file.slug === "index" || file.slug === "404" || file.unlisted === true) {
+          return false
+        }
+        const rec = file.frontmatter?.recomendar
+        if (rec === undefined || rec === null) return false
+        if (typeof rec === "boolean") return rec
+        const str = String(rec).trim().toLowerCase()
+        return (
+          str === "si" ||
+          str === "sí" ||
+          str === "true" ||
+          str === "yes" ||
+          str === "1"
+        )
+      })
+
+      // Sort by date descending (newest first)
+      recommendedFiles.sort((a, b) => {
+        const dateA = a.dates?.modified ?? a.dates?.created
+        const dateB = b.dates?.modified ?? b.dates?.created
+        if (dateA && dateB) return dateB.getTime() - dateA.getTime()
+        if (dateA && !dateB) return -1
+        if (!dateA && dateB) return 1
+        const titleA = ((a.frontmatter?.title as string) ?? a.slug).toLowerCase()
+        const titleB = ((b.frontmatter?.title as string) ?? b.slug).toLowerCase()
+        return titleA.localeCompare(titleB)
+      })
+
+      // Take latest 5
+      const top5 = recommendedFiles.slice(0, 5)
+
+      if (top5.length === 0) {
+        node.children = [
+          {
+            type: "element",
+            tagName: "div",
+            properties: { class: ["featured-empty-box"] },
+            children: [
+              {
+                type: "element",
+                tagName: "p",
+                properties: { class: ["featured-empty-hint"] },
+                children: [
+                  {
+                    type: "text",
+                    value:
+                      "💡 Para destacar notas aquí automáticamente, agrega en sus propiedades en Obsidian: ",
+                  },
+                  {
+                    type: "element",
+                    tagName: "code",
+                    properties: {},
+                    children: [{ type: "text", value: "recomendar: Si" }],
+                  },
+                ],
+              },
+            ],
+          },
+        ]
+      } else {
+        node.children = top5.map((page): Element => {
+          const title = (page.frontmatter?.title as string) ?? page.slug
+          const tags = (page.frontmatter?.tags as string[]) ?? []
+          const badge = tags.length > 0 ? tags[0] : "Recomendado"
+          const targetUrl = resolveRelative(slug, page.slug as FullSlug)
+          const desc =
+            (page.frontmatter?.description as string) ??
+            (page.description as string) ??
+            "Explora este artículo en el blog."
+
+          const dateVal = page.dates?.modified ?? page.dates?.created
+          const dateStr = dateVal ? formatDate(dateVal, cfg.locale as any) : ""
+
+          return {
+            type: "element",
+            tagName: "div",
+            properties: { class: ["featured-card"] },
+            children: [
+              {
+                type: "element",
+                tagName: "span",
+                properties: { class: ["card-badge"] },
+                children: [{ type: "text", value: badge }],
+              },
+              {
+                type: "element",
+                tagName: "h3",
+                properties: {},
+                children: [
+                  {
+                    type: "element",
+                    tagName: "a",
+                    properties: {
+                      href: targetUrl,
+                      class: ["internal", "internal-link", "alias"],
+                      dataSlug: page.slug,
+                    },
+                    children: [{ type: "text", value: title }],
+                  },
+                ],
+              },
+              {
+                type: "element",
+                tagName: "p",
+                properties: {},
+                children: [{ type: "text", value: desc }],
+              },
+              {
+                type: "element",
+                tagName: "div",
+                properties: { class: ["card-footer"] },
+                children: [
+                  {
+                    type: "element",
+                    tagName: "span",
+                    properties: {},
+                    children: [
+                      {
+                        type: "text",
+                        value: dateStr ? `📅 ${dateStr}` : "📖 Lectura recomendada",
+                      },
+                    ],
+                  },
+                  {
+                    type: "element",
+                    tagName: "a",
+                    properties: {
+                      href: targetUrl,
+                      class: ["read-more", "internal", "internal-link", "alias"],
+                      dataSlug: page.slug,
+                    },
+                    children: [{ type: "text", value: "Explorar nota →" }],
+                  },
+                ],
+              },
+            ],
+          }
+        })
+      }
+      return
+    }
+
+    if (node.children) {
+      for (const child of node.children) {
+        processNode(child as ElementContent)
+      }
+    }
+  }
+
+  for (const child of root.children) {
+    processNode(child as ElementContent)
+  }
+}
+
 export function renderPage(
   cfg: GlobalConfiguration,
   slug: FullSlug,
@@ -310,6 +485,9 @@ export function renderPage(
   const root = clone(componentData.tree) as Root
   const visited = new Set<FullSlug>([slug])
   renderTranscludes(root, cfg, slug, componentData, visited)
+
+  // Automatically populate featured cards with top 5 recommended notes (recomendar: Si)
+  renderAutoFeatured(root, cfg, slug, componentData)
 
   // Run plugin-provided tree transforms (e.g. resolving inline bases codeblocks)
   if (treeTransforms) {

@@ -1,5 +1,11 @@
-
-
+---
+title: Fundamentos de Finanzas y Macroeconomía (LSEG)
+description: Desglose de medidas económicas clave como GDP, brecha de producto, inflación e indicadores líderes (CPI, PMI, NFP).
+tags:
+  - finanzas
+  - macroeconomia
+recomendar: Si
+---
 
 ## 2. Economics
 Investments <- savings <- Sources: Employment, Profit, Returns 
