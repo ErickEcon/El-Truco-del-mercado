@@ -196,6 +196,7 @@ function createRouter() {
 
 createRouter()
 notifyNav(getFullSlug(window))
+window.addEventListener("load", () => notifyNav(getFullSlug(window)))
 
 if (!customElements.get("route-announcer")) {
   const attrs = {

@@ -13,13 +13,17 @@
   },
   "scripts": {
     "quartz": "./quartz/bootstrap-cli.mjs",
+    "build": "npx quartz build",
+    "serve": "npx quartz build --serve",
+    "sync": "npx quartz sync",
     "docs": "npx quartz build --serve -d docs",
     "check": "tsc --noEmit && npx prettier . --check",
     "format": "npx prettier . --write",
     "test": "tsx --test",
     "profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1",
     "install-plugins": "npx tsx ./quartz/plugins/loader/install-plugins.ts",
-    "prebuild": "npm run install-plugins"
+    "prebuild": "npm run install-plugins",
+    "postinstall": "node scripts/patch-mermaid.mjs"
   },
   "engines": {
     "npm": ">=10.9.2",
@@ -54,7 +58,6 @@
     "@quartz-community/content-meta": "^1.0.0",
     "@quartz-community/content-page": "^1.0.0",
     "@quartz-community/crawl-links": "^1.0.0",
-    "@quartz-themes/core": "^2.0.0",
     "@quartz-community/created-modified-date": "^1.0.0",
     "@quartz-community/darkmode": "^1.0.0",
     "@quartz-community/description": "^1.0.0",
@@ -70,6 +73,7 @@
     "@quartz-community/latex": "^1.0.0",
     "@quartz-community/note-properties": "^1.0.0",
     "@quartz-community/obsidian-flavored-markdown": "^1.0.0",
+    "@quartz-community/obsidian-plugin-excalidraw": "^1.0.0",
     "@quartz-community/og-image": "^1.0.0",
     "@quartz-community/ox-hugo": "^1.0.0",
     "@quartz-community/page-title": "^1.0.0",
@@ -86,6 +90,8 @@
     "@quartz-community/tag-list": "^1.0.0",
     "@quartz-community/tag-page": "^1.0.0",
     "@quartz-community/unlisted-pages": "^1.0.0",
+    "@quartz-themes/core": "^2.0.0",
+    "@quartz-themes/default": "^1.0.1",
     "ansi-truncate": "^1.4.0",
     "async-mutex": "^0.5.0",
     "chokidar": "^5.0.0",
