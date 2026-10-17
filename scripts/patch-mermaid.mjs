@@ -25,6 +25,15 @@ if (fs.existsSync(targetFile)) {
     modified = true
   }
 
+  // Fix 3: Enable deterministicIds so multiple diagrams on the same page don't collide on Date.now() timestamp IDs
+  const brokenInit = 't.initialize({startOnLoad:!1,securityLevel:"loose",theme:'
+  const fixedInit = 't.initialize({startOnLoad:!1,securityLevel:"loose",deterministicIds:!0,theme:'
+
+  if (content.includes(brokenInit)) {
+    content = content.replace(brokenInit, fixedInit)
+    modified = true
+  }
+
   if (modified) {
     fs.writeFileSync(targetFile, content, "utf-8")
     console.log("✓ Successfully patched obsidian-flavored-markdown for Mermaid diagram rendering.")

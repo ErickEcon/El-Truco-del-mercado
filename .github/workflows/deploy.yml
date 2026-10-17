@@ -43,6 +43,8 @@ jobs:
         run: npm ci
       - name: Install Quartz plugins
         run: npx quartz plugin install
+      - name: Patch Mermaid plugins
+        run: node scripts/patch-mermaid.mjs
       - name: Build Quartz
         run: npx quartz build
       - name: Upload artifact

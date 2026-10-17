@@ -13,3 +13,5 @@ tags:
 Desde aquí puedes regresar al inicio navegando hacia [[index|Inicio]].
 
 Observa que Quartz rastrea los enlaces bidireccionales de manera automática, por lo que verás la sección de **Enlaces entrantes (Backlinks)** en la barra lateral derecha conectada con el archivo principal.
+
+npx quartz sync
